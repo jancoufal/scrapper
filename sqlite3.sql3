@@ -1,0 +1,85 @@
+-- insert into image_box
+-- select
+-- 	source,
+-- 	ts_date,
+-- 	replace(ts_time, '8', '9'),
+-- 	replace(local_path, 'bobrik_zahradniceni.jpg', 'stunning-pekac.jpg'),
+-- 	'stunning-pekac.jpg',
+-- 	impressions
+-- from image_box
+-- where name = 'bobrik_zahradniceni.jpg'
+-- ;
+
+-- select * from image_box order by ts_date desc, ts_time desc
+-- ;
+
+delete from scrap_fails;
+delete from scrap_items;
+delete from scrap_stat;
+commit;
+
+select * from scrap_fails;
+select * from scrap_items;
+select * from scrap_stat;
+
+select * from sqlite_sequence;
+insert into scrap_stat(source) values ("test");
+select * from scrap_stat;
+
+select local_path, replace(local_path, '\', '/') from image_box;
+
+drop table scrap_stat;
+drop table scrap_fails;
+drop table image_box_2;
+
+drop table scrap_stat;
+create table if not exists scrap_stat (
+	scrap_stat_id integer primary key autoincrement,
+	source text,
+	ts_start_date text,
+	ts_start_time text,
+	ts_end_date text,
+	ts_end_time text,
+	status text,	-- in_progress, finished
+	succ_count integer,
+	fail_count integer,
+	exc_type text,
+	exc_value text,
+	exc_traceback text
+);
+
+drop table scrap_fails;
+create table if not exists scrap_fails (
+	scrap_fail_id integer primary key autoincrement,
+	scrap_stat_id integer,
+	ts_date text,
+	ts_time text,
+	item_name text,
+	description text,
+	exc_type text,
+	exc_value text,
+	exc_traceback text,
+	foreign key(scrap_stat_id) references scrap_stat(scrap_stat_id)
+);
+
+drop table image_box;
+create table if not exists image_box(
+	record_id integer primary key autoincrement,
+	scrap_stat_id integer,
+	source text,
+	ts_date text,
+	ts_week text,
+	ts_time text,
+	local_path text,
+	name text,
+	impressions integer,
+	foreign key(scrap_stat_id) references scrap_stat(scrap_stat_id)
+);
+
+--update image_box set local_path = replace(local_path, '\', '/');
+
+-- delete from image_box;
+
+
+
+
